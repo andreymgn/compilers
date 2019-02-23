@@ -23,7 +23,6 @@ class SyntaxTree:
         return self._getFollowpos(result)
     
     def _getFollowpos(self, result: defaultdict) -> dict:
-        print(result)
         if self.value == 'CONCAT':
             for i in self.left.lastpos:
                 result[i] = result[i].union(self.right.firstpos)
@@ -43,10 +42,13 @@ class SyntaxTree:
         dstates = {s0: False}
         dtran = defaultdict(dict)
         s = self._getNextState(dstates)
-        start = end = s
+        start = s
+        ends = []
+        maxState = max(positions)
         while True:
-            print(s)
             dstates[s] = True
+            if maxState in s:
+                ends.append(s)
             for a in sigma:
                 u = frozenset()
                 for p in s:
@@ -61,8 +63,8 @@ class SyntaxTree:
             s = self._getNextState(dstates)
             if s is None:
                 break
-
-        return DFA(dtran, start, end)
+        
+        return DFA(dtran, start, ends)
         
 
     def _getNextState(self, dstates: dict) -> frozenset:

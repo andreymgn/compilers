@@ -1,17 +1,19 @@
 from graphviz import Digraph
 
 class DFA:
-    def __init__(self, transitions: dict, start: frozenset, end:frozenset):
+    def __init__(self, transitions: dict, start: frozenset, ends: frozenset):
         self.transitions = transitions
         self.start = start
-        self.end = end
+        self.ends = ends
     
     def accepts(self, s: str) -> bool:
         state = self.start
         for ch in s:
+            if ch not in self.transitions[state]:
+                return False
             state = self.transitions[state][ch]
         
-        return state == self.end
+        return state in self.ends
 
     def vizualize(self) -> None:
         def _frozensetStr(fs: frozenset) -> str:
@@ -26,8 +28,9 @@ class DFA:
         f.attr('node', style='invis')
         f.node('start')
 
-        f.attr('node', shape='doublecircle', style='default')
-        f.node(_frozensetStr(self.end))
+        f.attr('node', shape='doublecircle', style='solid')
+        for end in self.ends:
+            f.node(_frozensetStr(end))
 
         f.attr('node', shape='circle')
         f.edge('start', _frozensetStr(self.start), label='start')

@@ -6,51 +6,63 @@ STAR = '*'
 PIPE = '|'
 CONCAT = 'CONCAT'
 
+def getPrecedence(ch: str) -> int:
+    precedence = {
+        LPAREN: 1,
+        PIPE: 2,
+        CONCAT: 3,
+        STAR: 4
+    }
+    if ch in precedence:
+        return precedence[ch]
+    else:
+        return 5
+
 def infixToPostfix(tokens: list) -> list:
     tokens.append(RPAREN)
     stack = []
     stack.append(LPAREN)
     result = []
     for t in tokens:
-        if t == PIPE or t == CONCAT:
-            if stack[-1] == LPAREN:
-                stack.append(t)
-            else:
-                v = stack.pop()
-                while v == PIPE or v == STAR or v == CONCAT:
-                    result.append(v)
-                    v = stack.pop()
-                stack.append(v)
-                stack.append(t)
-        elif t == STAR:
-            result.append(t)
-        elif t == LPAREN:
+        if t == LPAREN:
             stack.append(t)
         elif t == RPAREN:
-            v = stack.pop()
-            while v != LPAREN:
-                result.append(v)
-                v = stack.pop()
+            while stack[-1] != LPAREN:
+                result.append(stack.pop())
+            stack.pop()
         else:
-            result.append(t)
+            while len(stack) > 0:
+                top = stack[-1]
+                topPrecedence = getPrecedence(top)
+                currentPrecedence = getPrecedence(t)
+
+                if (topPrecedence < currentPrecedence):
+                    break
+                result.append(stack.pop())
+            stack.append(t)
+
+    while len(stack) > 0:
+        result.append(stack.pop())
     
     return result
 
 def tokenize(s: str) -> list:
     result = []
-    addConcat = False
-    for ch in s:
-        if ch == RPAREN or ch == STAR:
-            addConcat = True
-        elif ch == LPAREN or ch == PIPE:
-            addConcat = False
-        elif addConcat:
-            result.append(CONCAT)
+    operators = ['|', '*']
+    binOperators = ['|']
+    for i, ch in enumerate(s[:-1]):
+        nextCh = s[i+1]
         result.append(ch)
+        if ch != LPAREN and \
+            nextCh != RPAREN and \
+            not nextCh in operators and \
+            not ch in binOperators:
+            result.append(CONCAT)
+    result.append(s[-1])
 
     return result
 
-def syntaxTreeFromRPN(tokens: list) -> (SyntaxTree, dict):
+def syntaxTreeFromRPN(tokens: list) -> (SyntaxTree, dict, set):
     stack = []
     position = 1
     positions = {}
