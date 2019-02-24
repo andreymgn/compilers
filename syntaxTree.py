@@ -3,13 +3,13 @@ from DFA import DFA
 
 class SyntaxTree:
     def __init__(self, 
-                 value: str,
-                 position: int,
+                 value,
+                 position,
                  left,
                  right,
-                 nullable: bool,
-                 firstpos: frozenset,
-                 lastpos: frozenset):
+                 nullable,
+                 firstpos,
+                 lastpos):
         self.value = value
         self.position = position
         self.left = left
@@ -18,11 +18,11 @@ class SyntaxTree:
         self.firstpos = firstpos
         self.lastpos = lastpos
 
-    def getFollowpos(self) -> dict:
+    def getFollowpos(self):
         result = defaultdict(frozenset)
         return self._getFollowpos(result)
     
-    def _getFollowpos(self, result: defaultdict) -> dict:
+    def _getFollowpos(self, result):
         if self.value == 'CONCAT':
             for i in self.left.lastpos:
                 result[i] = result[i].union(self.right.firstpos)
@@ -37,7 +37,7 @@ class SyntaxTree:
 
         return result
 
-    def toDFA(self, followpos: list, positions: list, sigma: frozenset) -> DFA:
+    def toDFA(self, followpos, positions, sigma):
         s0 = self.firstpos
         dstates = {s0: False}
         dtran = defaultdict(dict)
@@ -67,7 +67,7 @@ class SyntaxTree:
         return DFA(dtran, start, ends)
         
 
-    def _getNextState(self, dstates: dict) -> frozenset:
+    def _getNextState(self, dstates):
         for k, v in dstates.items():
             if not v:
                 return k

@@ -1,10 +1,13 @@
 from parser import infixToPostfix, tokenize, syntaxTreeFromRPN
 
-# regex = "(0|1(01*0)*1)*"
-regex = "(a|b)*abb"
-sigma = set(regex) - set("()|*")
+# regex = '(0|1(01*0)*1)*'
+regex = '(01*1)*1'
+# regex = "(a|b)*abb"
+# regex = "(a|b)*"
+# regex = "(a*|b*)*"
+sigma = set(regex) - set('()|*')
 
-tokens = tokenize(regex + "#")
+tokens = tokenize(regex + '#')
 print(tokens)
 
 rpn = infixToPostfix(tokens)
@@ -26,4 +29,4 @@ print(dfa.accepts('1100'))
 print(dfa.accepts('1111'))
 print(dfa.accepts('100010'))
 
-dfa.vizualize()
+dfa.visualize()

@@ -6,7 +6,7 @@ STAR = '*'
 PIPE = '|'
 CONCAT = 'CONCAT'
 
-def getPrecedence(ch: str) -> int:
+def getPrecedence(ch):
     precedence = {
         LPAREN: 1,
         PIPE: 2,
@@ -18,7 +18,7 @@ def getPrecedence(ch: str) -> int:
     else:
         return 5
 
-def infixToPostfix(tokens: list) -> list:
+def infixToPostfix(tokens):
     tokens.append(RPAREN)
     stack = []
     stack.append(LPAREN)
@@ -46,7 +46,7 @@ def infixToPostfix(tokens: list) -> list:
     
     return result
 
-def tokenize(s: str) -> list:
+def tokenize(s):
     result = []
     operators = ['|', '*']
     binOperators = ['|']
@@ -62,7 +62,7 @@ def tokenize(s: str) -> list:
 
     return result
 
-def syntaxTreeFromRPN(tokens: list) -> (SyntaxTree, dict, set):
+def syntaxTreeFromRPN(tokens):
     stack = []
     position = 1
     positions = {}

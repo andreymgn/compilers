@@ -1,12 +1,12 @@
 from graphviz import Digraph
 
 class DFA:
-    def __init__(self, transitions: dict, start: frozenset, ends: frozenset):
+    def __init__(self, transitions, start, ends):
         self.transitions = transitions
         self.start = start
         self.ends = ends
     
-    def accepts(self, s: str) -> bool:
+    def accepts(self, s):
         state = self.start
         for ch in s:
             if ch not in self.transitions[state]:
@@ -15,8 +15,8 @@ class DFA:
         
         return state in self.ends
 
-    def vizualize(self) -> None:
-        def _frozensetStr(fs: frozenset) -> str:
+    def visualize(self):
+        def _frozensetStr(fs):
             s = '{'
             for v in fs:
                 s += ' {}, '.format(v)
@@ -40,5 +40,5 @@ class DFA:
         
         f.view()
 
-    
-
+    def minimize(self):
+        pass
