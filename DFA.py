@@ -17,14 +17,14 @@ class DFA:
         
         return state in self.ends
 
-    def visualize(self):
+    def visualize(self, fname='fsm.gv'):
         def _frozensetStr(fs):
             s = '{'
             for v in fs:
                 s += ' {}, '.format(v)
             return s + '}'
 
-        f = Digraph('finite_state_machine', filename='fsm.gv')
+        f = Digraph('finite_state_machine', filename=fname)
         f.attr(rankdir='LR')
 
         f.attr('node', style='invis')
@@ -106,7 +106,6 @@ class DFA:
                 newstate = frozenset()
                 for state in cls:
                     newstate = newstate.union(state)
-                print(newstate)
                 self._updateIn(cls, newstate)
                 self._updateOut(cls, newstate)
 
