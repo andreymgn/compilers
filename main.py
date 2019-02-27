@@ -1,3 +1,5 @@
+import sys
+
 from parser import infixToPostfix, tokenize, syntaxTreeFromRPN
 from DFA import DFA
 
@@ -24,6 +26,8 @@ def showAccepts(regex, testStr):
     eqCls = dfa.findEquivalenceClasses(sigma)
     dfa.mergeEquivalentStates(eqCls)
     dfa.visualize(fname='fsm1.gv')
+
+    print(dfa.accepts(testStr))
 
 
 def showMinimization():
@@ -102,4 +106,12 @@ def showMinimization4():
     dfa.mergeEquivalentStates(eqCls)
     dfa.visualize(fname='fsm1.gv')
 
-showAccepts(regex, '000111')
+# showAccepts(regex, '000111')
+# showMinimization()
+# showMinimization4()
+
+if len(sys.argv) == 3:
+    showAccepts(sys.argv[1], sys.argv[2])
+else:
+    print("usage: python3 main.py <regex> <string>")
+
