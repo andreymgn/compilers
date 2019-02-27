@@ -9,7 +9,8 @@ class TestDFA(unittest.TestCase):
             '(01*1)*1',
             '(a|b)*abb',
             '(a|b)*',
-            '(a*|b*)*'
+            '(a*|b*)*',
+            '((000)|(001)|(010)|(011)|(100)|(101)|(110)|(111))*'
         ]
         for p in patterns:
             sigma = set(p) - set('()|*')
@@ -62,6 +63,15 @@ class TestDFA(unittest.TestCase):
                 'ab': True,
                 'ba': True,
                 'pupa': False, 
+            },
+            '((000)|(001)|(010)|(011)|(100)|(101)|(110)|(111))*': {
+                '': True,
+                '0': False,
+                '10': False,
+                '111': True,
+                '101': True,
+                '1111': False,
+                '010001': True
             }
         }
 
