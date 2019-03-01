@@ -1,13 +1,17 @@
 from grammar import fromJSON
 
-g = fromJSON('grammars/dragon_book_indirect_left_recursion.json')
+g = fromJSON('grammars/GNF.json')
+
+# g.eliminateIdentity()
 
 # print(g)
 
-g.eliminateIdentity()
+# g.eliminateLeftRecursion()
 
-# print(g)
+newg = g.toGNF()
 
-g.eliminateLeftRecursion()
+# print(newg.terminals)
 
-print(g)
+# print(newg.productions)
+
+print(newg)

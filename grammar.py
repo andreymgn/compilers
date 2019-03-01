@@ -1,6 +1,10 @@
-from collections import namedtuple, defaultdict
+import numpy as np
+
+from collections import defaultdict
 
 import json
+
+from matrix import Matrix
 
 class Grammar:
     """Context-free grammar
@@ -28,7 +32,7 @@ class Grammar:
                     else:
                         s += symbol[0] + ' '
             result.append(s)
-        return result
+        return '\n'.join(result)
 
     def eliminateIdentity(self):
         # remove rules like A -> A
@@ -83,6 +87,91 @@ class Grammar:
                 for lhs, rhs in updatedProductions.items():
                     self.productions[lhs] = rhs
             self.eliminateImmediateLeftRecursion(nt[i])
+
+    def toGNF(self):
+        """Convert grammar to Greibach normal form
+        """
+        # 1) convert to matrix form: X * H + K,
+        # where X is a row vector of nonterminals,
+        # H is a matrix of productions which start with nonterminal
+        # K is a row vector of productions which start with terminal
+        # for example look at [1] starting on page 20
+        # [1] https://www.cis.upenn.edu/~jean/old511/html/cis51108sl4b.pdf
+
+        X, H, K = self._toMatrix()
+
+        # 2) write system of equations
+        # { X = K * Y + K
+        # { Y = H * Y + H
+        # where Y is a matrix of new nonterminals with size same as H
+        Y = [[[(('Y{}{}'.format(j, i), False),)] for i in range(H.mat.shape[0])] for j in range(H.mat.shape[1])]
+        Y = Matrix(Y)
+
+        # 3) calculate X from step 2
+        # substitute nonterminals in matrix H with calculated X values
+        # and get matrix L
+        # the new system is:
+        # { X = K * Y + K
+        # { Y = L * Y + L
+        # calculate X, calculate Y
+        # convert these matrices to one grammar
+
+        xCalc = K.dot(Y).add(K)
+        subs = {}
+        for i, nt in enumerate(self.nonterminals):
+            subs[nt] = xCalc.mat[0][i]
+
+        L = H
+        for i, row in enumerate(H.mat):
+            for j, val in enumerate(row):
+                newCell = []
+                for tup in val:
+                    if tup[0][0] in subs:
+                        for sub in subs[tup[0][0]]:
+                            newCell.append(sub + tup[1:])
+                    else:
+                        newCell.append(tup)
+                L.mat[i, j] = set(newCell)
+        
+        yCalc = L.dot(Y).add(L)
+
+        terminals = self.terminals
+        nonterminals = self.nonterminals + ['Y{}{}'.format(j, i) for i in range(H.mat.shape[0]) for j in range(H.mat.shape[1])]
+        productions = {}
+        start = self.start
+        for i, oldNT in enumerate(self.nonterminals):
+            productions[oldNT] = xCalc.mat[0][i]
+        for i, row in enumerate(yCalc.mat):
+            for j, val in enumerate(row):
+                lhs = 'Y{}{}'.format(j, i)
+                productions[lhs] = val
+
+        # print(xCalc.mat)
+        # print(yCalc.mat)
+        return Grammar(nonterminals, terminals, productions, start)
+        
+    def _toMatrix(self):
+        nts = set(self.nonterminals)
+        X = []
+        H = [[[] for _ in self.nonterminals] for _ in self.nonterminals]
+        ntToIdx = {}
+        for i, nt in enumerate(self.nonterminals):
+            ntToIdx[nt] = i
+
+        K = [[] for _ in self.nonterminals]
+        for i, nt in enumerate(self.nonterminals):
+            X.append(nt)
+            for prod in self.productions[nt]:
+                if prod[0][1]:
+                    K[ntToIdx[nt]].append(tuple(prod))
+                else:
+                    row = ntToIdx[nt]
+                    col = ntToIdx[prod[0][0]]
+                    H[row][col].append(tuple(prod[1:]))
+        K = Matrix(K, transpose=True, isVector=True)
+        K.mat = np.expand_dims(K.mat, axis=1)
+        K.mat = K.mat.T
+        return Matrix(X, transpose=True), Matrix(H, transpose=True), K
 
 
 def fromJSON(filename):

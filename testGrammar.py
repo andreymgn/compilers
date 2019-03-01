@@ -50,4 +50,10 @@ class TestGrammar(unittest.TestCase):
                 numPs += len(rhs)
             self.assertEqual(numPs, info['numProductions'])
 
-
+    def testToMatrix(self):
+        path = 'grammars/GNF.json'
+        g = fromJSON(path)
+        X, H, K = g._toMatrix()
+        self.assertEqual(X.mat.shape, (1, 2))
+        self.assertEqual(H.mat.shape, (2, 2))
+        self.assertEqual(K.mat.shape, (1, 2))
