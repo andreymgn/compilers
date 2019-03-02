@@ -1,4 +1,5 @@
 from matrix import Matrix, mul
+from orderedSet import OrderedSet
 
 import unittest
 
@@ -11,16 +12,16 @@ class MatrixTest(unittest.TestCase):
         lhs = Matrix([[['1','2'],['2']],[['3'],['3','4']]])
         rhs = Matrix([[['1','2'],['2']],[['3'],['3','4']]])
         dot = lhs.dot(rhs)
-        result = Matrix([[['23', '22', '11', '12', '21'], ['12', '23', '22', '24']],
-                         [['31', '43', '32', '33'], ['34', '43', '44', '32', '33']]])
+        result = Matrix([[['11', '12', '21', '22', '23'], ['12', '22', '23', '24']],
+                         [['31', '32', '33', '43'], ['32', '33', '34', '43', '44']]])
         self.assertEqual(dot.mat.shape, (2, 2))
         self.assertTrue((dot.mat == result.mat).all())
 
     def testMul(self):
-        lhs = set(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
-        rhs = set(['1', '2', '3', '4', '5', '6', '7', '8'])
+        lhs = OrderedSet(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+        rhs = OrderedSet(['1', '2', '3', '4', '5', '6', '7', '8'])
         prod = mul(lhs, rhs)
-        result = set(['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8',
+        result = OrderedSet(['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8',
                       'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8',
                       'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8',
                       'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8',

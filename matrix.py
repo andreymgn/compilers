@@ -1,5 +1,7 @@
 import numpy as np
 
+from orderedSet import OrderedSet
+
 class Matrix:
     """matrix where sum defined as union
     and multiplication defined as concatenation
@@ -7,16 +9,18 @@ class Matrix:
     """
     def __init__(self, elements, transpose=False, isVector=False):
         if isVector:
-            els = [set(x) for x in elements]
+            els = [OrderedSet(x) for x in elements]
         else:
-            els = [[set(x) for x in row] for row in elements]
+            els = [[OrderedSet(x) for x in row] for row in elements]
         self.mat = np.array(els, dtype=object)
         if transpose:
             self.mat = self.mat.T
     
     def dot(self, rhs):
         assert self.mat.shape[1] == rhs.mat.shape[0]
-        els = [[set() for _ in range(rhs.mat.shape[1])] for _ in range(self.mat.shape[0])]
+        els = [[OrderedSet([]) \
+            for _ in range(rhs.mat.shape[1])] \
+            for _ in range(self.mat.shape[0])]
         result = np.array(els, dtype=object)
         for i in range(self.mat.shape[0]):
             for j in range(rhs.mat.shape[1]):
@@ -29,7 +33,9 @@ class Matrix:
 
     def add(self, rhs):
         assert self.mat.shape == rhs.mat.shape
-        els = [[set() for _ in range(self.mat.shape[1])] for _ in range(self.mat.shape[0])]
+        els = [[OrderedSet([]) \
+            for _ in range(self.mat.shape[1])] \
+            for _ in range(self.mat.shape[0])]
         result = np.array(els, dtype=object)
         for i in range(self.mat.shape[0]):
             for j in range(self.mat.shape[1]):
@@ -50,4 +56,4 @@ def mul(lhs, rhs):
     multiplication is concatenation
     see: https://en.wikipedia.org/wiki/Concatenation#Concatenation_of_sets_of_strings
     """
-    return set([a + b for a in lhs for b in rhs])
+    return OrderedSet([a + b for a in lhs for b in rhs])

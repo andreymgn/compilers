@@ -1,10 +1,10 @@
 import numpy as np
 
 from collections import defaultdict
-
 import json
 
 from matrix import Matrix
+from orderedSet import OrderedSet
 
 class Grammar:
     """Context-free grammar
@@ -104,7 +104,8 @@ class Grammar:
         # { X = K * Y + K
         # { Y = H * Y + H
         # where Y is a matrix of new nonterminals with size same as H
-        Y = [[[(('Y{}{}'.format(j, i), False),)] for i in range(H.mat.shape[0])] for j in range(H.mat.shape[1])]
+        Y = [[[(('Y{}{}'.format(j, i), False),)] \
+            for i in range(H.mat.shape[0])] for j in range(H.mat.shape[1])]
         Y = Matrix(Y)
 
         # 3) calculate X from step 2
@@ -131,12 +132,13 @@ class Grammar:
                             newCell.append(sub + tup[1:])
                     else:
                         newCell.append(tup)
-                L.mat[i, j] = set(newCell)
+                L.mat[i, j] = OrderedSet(newCell)
         
         yCalc = L.dot(Y).add(L)
 
         terminals = self.terminals
-        nonterminals = self.nonterminals + ['Y{}{}'.format(j, i) for i in range(H.mat.shape[0]) for j in range(H.mat.shape[1])]
+        nonterminals = self.nonterminals + ['Y{}{}'.format(j, i) \
+            for i in range(H.mat.shape[0]) for j in range(H.mat.shape[1])]
         productions = {}
         start = self.start
         for i, oldNT in enumerate(self.nonterminals):
