@@ -67,7 +67,9 @@ class TestGrammar(unittest.TestCase):
     def testToGNF(self):
         path = 'grammars/GNF.json'
         g = fromJSON(path)
+        self.assertFalse(g.isInGNF())
         newG = g.toGNF()
+        self.assertTrue(newG.isInGNF())
         self.assertEqual(len(newG.nonterminals),
                          len(g.nonterminals) + len(g.nonterminals) ** 2)
         self.assertEqual(len(newG.terminals), len(g.terminals))

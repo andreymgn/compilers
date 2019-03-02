@@ -2,16 +2,15 @@ from grammar import fromJSON
 
 g = fromJSON('grammars/GNF.json')
 
-# g.eliminateIdentity()
+print(g)
+print(g.isInGNF())
 
-# print(g)
+# g.eliminateIdentity()
 
 # g.eliminateLeftRecursion()
 
 newg = g.toGNF()
 
-# print(newg.terminals)
-
-# print(newg.productions)
-
 print(newg)
+
+print(newg.isInGNF())

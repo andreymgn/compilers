@@ -155,9 +155,14 @@ class Grammar:
                 lhs = 'Y{}{}'.format(j, i)
                 productions[lhs] = val
 
-        # print(xCalc.mat)
-        # print(yCalc.mat)
         return Grammar(nonterminals, terminals, productions, start)
+
+    def isInGNF(self):
+        for _, rhs in self.productions.items():
+            for prod in rhs:
+                if not prod[0][1]:
+                    return False
+        return True
 
     def _toMatrix(self):
         X = []
