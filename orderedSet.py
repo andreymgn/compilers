@@ -6,7 +6,7 @@ class OrderedSet:
         self.s = OrderedDict()
         for v in values:
             self.s[v] = None
-    
+
     def contains(self, value):
         return value in self.s
 
@@ -20,7 +20,7 @@ class OrderedSet:
         for v in rhs.s:
             result.add(v)
         return result
-    
+
     def __or__(self, rhs):
         return self.union(rhs)
 

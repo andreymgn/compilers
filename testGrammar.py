@@ -68,7 +68,8 @@ class TestGrammar(unittest.TestCase):
         path = 'grammars/GNF.json'
         g = fromJSON(path)
         newG = g.toGNF()
-        self.assertEqual(len(newG.nonterminals), len(g.nonterminals) + len(g.nonterminals) ** 2)
+        self.assertEqual(len(newG.nonterminals),
+                         len(g.nonterminals) + len(g.nonterminals) ** 2)
         self.assertEqual(len(newG.terminals), len(g.terminals))
         numPs = 0
         for _, rhs in newG.productions.items():

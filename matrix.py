@@ -16,12 +16,12 @@ class Matrix:
         self.mat = np.array(els, dtype=object)
         if transpose:
             self.mat = self.mat.T
-    
+
     def dot(self, rhs):
         assert self.mat.shape[1] == rhs.mat.shape[0]
-        els = [[OrderedSet([]) \
-            for _ in range(rhs.mat.shape[1])] \
-            for _ in range(self.mat.shape[0])]
+        els = [[OrderedSet([])
+               for _ in range(rhs.mat.shape[1])]
+               for _ in range(self.mat.shape[0])]
         result = np.array(els, dtype=object)
         for i in range(self.mat.shape[0]):
             for j in range(rhs.mat.shape[1]):
@@ -34,9 +34,9 @@ class Matrix:
 
     def add(self, rhs):
         assert self.mat.shape == rhs.mat.shape
-        els = [[OrderedSet([]) \
-            for _ in range(self.mat.shape[1])] \
-            for _ in range(self.mat.shape[0])]
+        els = [[OrderedSet([])
+               for _ in range(self.mat.shape[1])]
+               for _ in range(self.mat.shape[0])]
         result = np.array(els, dtype=object)
         for i in range(self.mat.shape[0]):
             for j in range(self.mat.shape[1]):
@@ -48,9 +48,10 @@ class Matrix:
 
 def add(lhs, rhs):
     """lhs and rhs are sets
-    and addition is defined to be union of these sets 
+    and addition is defined to be union of these sets
     """
     return lhs | rhs
+
 
 def mul(lhs, rhs):
     """lhs and rhs are sets

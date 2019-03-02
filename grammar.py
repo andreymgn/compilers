@@ -15,10 +15,14 @@ class Grammar:
         self.terminals = terminals
         self.productions = productions
         self.start = start
-    
+
     def __str__(self):
         prods = self._prodsToStr()
-        return 'Grammar with\nnonterminals: {},\nterminals: {},\nproductions: {},\nstart: {}'.format(self.nonterminals, self.terminals, prods, self.start)
+        return 'Grammar with\nnonterminals: {},\
+            \nterminals: {},\
+            \nproductions: {},\
+            \nstart: {}'\
+            .format(self.nonterminals, self.terminals, prods, self.start)
 
     def _prodsToStr(self):
         result = []
@@ -70,7 +74,7 @@ class Grammar:
                 updatedProductions[lhs] = beta
                 updatedProductions[lhsPrime] = alpha + [[('ϵ', False)]]
         for lhs, rhs in updatedProductions.items():
-            self.productions[lhs] = rhs 
+            self.productions[lhs] = rhs
 
     def eliminateLeftRecursion(self):
         nt = self.nonterminals
@@ -82,7 +86,8 @@ class Grammar:
                         if lhs == nt[i]:
                             if prod[0][0] == nt[j]:
                                 for delta in self.productions[nt[j]]:
-                                    updatedProductions[lhs].append(delta + prod[1:])
+                                    newProd = delta + prod[1:]
+                                    updatedProductions[lhs].append(newProd)
                             else:
                                 updatedProductions[lhs].append(prod)
                 for lhs, rhs in updatedProductions.items():
@@ -105,8 +110,8 @@ class Grammar:
         # { X = K * Y + K
         # { Y = H * Y + H
         # where Y is a matrix of new nonterminals with size same as H
-        Y = [[[(('Y{}{}'.format(j, i), False),)] \
-            for i in range(H.mat.shape[0])] for j in range(H.mat.shape[1])]
+        Y = [[[(('Y{}{}'.format(j, i), False),)]
+              for i in range(H.mat.shape[0])] for j in range(H.mat.shape[1])]
         Y = Matrix(Y)
 
         # 3) calculate X from step 2
@@ -134,12 +139,13 @@ class Grammar:
                     else:
                         newCell.append(tup)
                 L.mat[i, j] = OrderedSet(newCell)
-        
+
         yCalc = L.dot(Y).add(L)
 
         terminals = self.terminals
-        nonterminals = self.nonterminals + ['Y{}{}'.format(j, i) \
-            for i in range(H.mat.shape[0]) for j in range(H.mat.shape[1])]
+        nonterminals = self.nonterminals + \
+            ['Y{}{}'.format(j, i)
+             for i in range(H.mat.shape[0]) for j in range(H.mat.shape[1])]
         productions = {}
         start = self.start
         for i, oldNT in enumerate(self.nonterminals):
@@ -152,9 +158,8 @@ class Grammar:
         # print(xCalc.mat)
         # print(yCalc.mat)
         return Grammar(nonterminals, terminals, productions, start)
-        
+
     def _toMatrix(self):
-        nts = set(self.nonterminals)
         X = []
         H = [[[] for _ in self.nonterminals] for _ in self.nonterminals]
         ntToIdx = {}
@@ -185,7 +190,7 @@ def fromJSON(filename):
     ts = {}
     for term in data['terminals']:
         ts[term['name']] = term['spelling']
-    
+
     ps = defaultdict(list)
     for p in data['productions']:
         lhs = p['lhs']
@@ -193,7 +198,7 @@ def fromJSON(filename):
         for symbol in p['rhs']:
             rhs.append((symbol['name'], symbol['isTerminal']))
         ps[lhs].append(rhs)
-    
+
     start = data['start']
 
     return Grammar(nts, ts, ps, start)
