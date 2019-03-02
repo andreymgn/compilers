@@ -1,7 +1,8 @@
+import unittest
+
 from matrix import Matrix, mul
 from orderedSet import OrderedSet
 
-import unittest
 
 class MatrixTest(unittest.TestCase):
     def testConstruct(self):

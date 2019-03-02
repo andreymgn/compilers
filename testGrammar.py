@@ -2,6 +2,7 @@ import unittest
 
 from grammar import fromJSON
 
+
 class TestGrammar(unittest.TestCase):
     def testParse(self):
         testCases = {

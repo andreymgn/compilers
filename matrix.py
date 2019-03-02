@@ -2,6 +2,7 @@ import numpy as np
 
 from orderedSet import OrderedSet
 
+
 class Matrix:
     """matrix where sum defined as union
     and multiplication defined as concatenation

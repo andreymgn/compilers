@@ -1,10 +1,11 @@
-import numpy as np
-
-from collections import defaultdict
 import json
+from collections import defaultdict
+
+import numpy as np
 
 from matrix import Matrix
 from orderedSet import OrderedSet
+
 
 class Grammar:
     """Context-free grammar
