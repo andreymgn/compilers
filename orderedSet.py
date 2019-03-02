@@ -31,3 +31,6 @@ class OrderedSet:
 
     def __eq__(self, rhs):
         return self.s == rhs.s
+
+    def __len__(self):
+        return len(self.s)

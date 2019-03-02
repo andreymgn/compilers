@@ -14,6 +14,11 @@ class TestGrammar(unittest.TestCase):
                 'numNonterminal': 2,
                 'numTerminal': 4,
                 'numProductions': 5
+            },
+            'grammars/GNF.json': {
+                'numNonterminal': 2,
+                'numTerminal': 4,
+                'numProductions': 7
             }
         }
 
@@ -57,3 +62,14 @@ class TestGrammar(unittest.TestCase):
         self.assertEqual(X.mat.shape, (1, 2))
         self.assertEqual(H.mat.shape, (2, 2))
         self.assertEqual(K.mat.shape, (1, 2))
+
+    def testToGNF(self):
+        path = 'grammars/GNF.json'
+        g = fromJSON(path)
+        newG = g.toGNF()
+        self.assertEqual(len(newG.nonterminals), len(g.nonterminals) + len(g.nonterminals) ** 2)
+        self.assertEqual(len(newG.terminals), len(g.terminals))
+        numPs = 0
+        for _, rhs in newG.productions.items():
+            numPs += len(rhs)
+        self.assertEqual(numPs, 42)
