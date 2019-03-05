@@ -20,7 +20,7 @@ class Grammar:
         prods = self._prodsToStr()
         return 'Grammar with\nnonterminals: {},\
             \nterminals: {},\
-            \nproductions: {},\
+            \nproductions: \n{},\
             \nstart: {}'\
             .format(self.nonterminals, self.terminals, prods, self.start)
 
