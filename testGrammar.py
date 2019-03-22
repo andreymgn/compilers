@@ -98,3 +98,30 @@ class TestGrammar(unittest.TestCase):
             for _, rhs in newG.productions.items():
                 numPs += len(rhs)
             self.assertEqual(numPs, numProds)
+
+    def testFirst_1(self):
+        testCase = {
+            'E': set(['lparen', 'ident']),
+            "E'": set(['plus', 'ϵ']),
+            'T': set(['lparen', 'ident']),
+            "T'": set(['mul', 'ϵ']),
+            'F': set(['lparen', 'ident'])
+        }
+        g = fromJSON('grammars/g0.json')
+        first = g.getFirst_1()
+        for nt, fst in testCase.items():
+            self.assertEqual(first[nt], fst)
+
+    def testFollow_1(self):
+        testCase = {
+            'E': set(['$', 'rparen']),
+            "E'": set(['$', 'rparen']),
+            'T': set(['$', 'rparen', 'plus']),
+            "T'": set(['$', 'rparen', 'plus']),
+            'F': set(['$', 'rparen', 'plus', 'mul'])
+        }
+        g = fromJSON('grammars/g0.json')
+        first = g.getFirst_1()
+        follow = g.getFollow_1(first)
+        for nt, flw in testCase.items():
+            self.assertEqual(follow[nt], flw)

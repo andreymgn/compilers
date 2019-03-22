@@ -186,6 +186,57 @@ class Grammar:
         K.mat = K.mat.T
         return Matrix(X, transpose=True), Matrix(H, transpose=True), K
 
+    def getFirst_1(self):
+        def _getFirstForNT(first, x):
+            if self._hasEpsilonProduction(x):
+                first[x] |= set(['ϵ'])
+            for prod in self.productions[x]:
+                y = prod[0][0]
+                if len(result[y]) == 0:
+                    first = _getFirstForNT(first, y)
+                first[x] |= first[y]
+            return first
+            
+        result = defaultdict(set)
+        for t in set(self.terminals.keys()):
+            result[t] = set([t])
+        result['ϵ'] = set(['ϵ'])
+        for x in self.nonterminals:
+            result = _getFirstForNT(result, x)
+        return result
+
+    def _hasEpsilonProduction(self, x):
+        if x in set(self.terminals.keys()):
+            return false
+        for prod in self.productions[x]:
+            for s in prod:
+                if s[0] == 'ϵ':
+                     return True
+        return False
+
+    def getFollow_1(self, first):
+        # https://www.jambe.co.nz/UNI/FirstAndFollowSets.html
+        def _calcFollow(follow, A):
+            for prod in self.productions[A]:
+                b = prod[-1][0]
+                if len(prod) == 2:
+                    follow[b] |= follow[A]
+                if len(prod) >= 3:
+                    B = prod[-2][0]
+                    follow[B] |= first[b] - set(['ϵ'])
+                    if 'ϵ' in first[b]:
+                        follow[B] |= follow[A]
+            return follow
+
+
+        result = defaultdict(set)
+        result[self.start] = set(['$'])
+        resCopy = {}
+        while sum([len(value) for _, value in resCopy.items()]) != sum([len(value) for _, value in result.items()]):
+            resCopy = result.copy()
+            for A in self.nonterminals:
+                result = _calcFollow(result, A)
+        return result
 
 def fromJSON(filename):
     with open(filename) as f:

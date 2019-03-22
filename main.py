@@ -1,16 +1,17 @@
 from grammar import fromJSON
 
-g = fromJSON('grammars/GNF.json')
+g = fromJSON('grammars/g0.json')
 
+g.eliminateIdentity()
+
+g.eliminateLeftRecursion()
+
+print()
 print(g)
-print(g.isInGNF())
 
-# g.eliminateIdentity()
+first = g.getFirst_1()
+print(first)
 
-# g.eliminateLeftRecursion()
-
-newg = g.toGNF()
-
-print(newg)
-
-print(newg.isInGNF())
+print()
+follow = g.getFollow_1(first)
+print(follow)
