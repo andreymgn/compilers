@@ -1,17 +1,9 @@
-from grammar import fromJSON
+from g3 import Parser
 
-g = fromJSON('grammars/g0.json')
+s = ''
+with open('programs/success.txt') as f:
+    s = f.read()
+print(s)
+p = Parser(s)
 
-g.eliminateIdentity()
-
-g.eliminateLeftRecursion()
-
-print()
-print(g)
-
-first = g.getFirst_1()
-print(first)
-
-print()
-follow = g.getFollow_1(first)
-print(follow)
+print(p.run())

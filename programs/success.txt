@@ -1,0 +1,11 @@
+{
+ abc=123+123<123*123;
+ abc=abc^123<123^123;
+ abc=+abc>-abc;
+ {
+    abc=(+abc+123)-abc>-abc%123;
+    abc=abc==abc
+ 
+ }
+}
+ 

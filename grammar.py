@@ -231,12 +231,26 @@ class Grammar:
 
         result = defaultdict(set)
         result[self.start] = set(['$'])
-        resCopy = {}
-        while sum([len(value) for _, value in resCopy.items()]) != sum([len(value) for _, value in result.items()]):
-            resCopy = result.copy()
+        resLen = 0
+        while resLen != sum([len(value) for _, value in result.items()]):
+            resLen = sum([len(value) for _, value in result.items()])
             for A in self.nonterminals:
                 result = _calcFollow(result, A)
         return result
+
+    def toJSON(self, filename):
+        data = {"terminals": [{"name":name,"spelling":spelling} for name, spelling in self.terminals.items()],
+                "nonterminals": self.nonterminals,
+                "start":self.start}
+        productions = []
+        for lhs, prods in self.productions.items():
+            for prod in prods:
+                p = {"lhs": lhs,
+                     "rhs": [{"name":name,"isTerminal":isTerminal} for name, isTerminal in prod]}
+                productions.append(p)
+        data["productions"] = productions
+        with open(filename, 'w') as f:
+            json.dump(data, f)
 
 def fromJSON(filename):
     with open(filename) as f:
