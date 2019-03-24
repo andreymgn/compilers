@@ -12,7 +12,16 @@ class TestG3(unittest.TestCase):
         p.run()
 
     def testFail(self):
-        testCases = []
+        prefix = 'programs/fail_'
+        ext = '.txt'
+        testCases = ['missing_close_bracket',
+                     'missing_open_bracket',
+                     'missing_close_parenthesis',
+                     'missing_open_parenthesis',
+                     'missing_semi',
+                     'no_arith_expr',
+                     'no_condition']
+        testCases = [prefix + test + ext for test in testCases]
 
         for test in testCases:
             s = ''
